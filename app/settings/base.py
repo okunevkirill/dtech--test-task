@@ -4,6 +4,7 @@ __all__ = [
 ]
 
 from functools import lru_cache
+from typing import Optional
 
 from dotenv import find_dotenv
 from pydantic.env_settings import BaseSettings
@@ -29,7 +30,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: StrictStr
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_DATABASE_NAME: StrictStr
-    POSTGRES_DATA_VOLUME: Path
+    POSTGRES_DATA_VOLUME: Optional[Path] = None
 
     class Config:
         env_file_encoding = "utf-8"
