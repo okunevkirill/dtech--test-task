@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  postgres:
+    container_name: dtech-postgres
+    build:
+      context: .
+      dockerfile: docker/postgresql/Dockerfile
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE_NAME}
