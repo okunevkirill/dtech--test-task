@@ -5,12 +5,19 @@ import uvicorn
 from fastapi import FastAPI, status
 from fastapi.responses import HTMLResponse
 
+from app import routes
 from app.settings import SETTINGS
 from app.db.base import init_models
 
 app_web = FastAPI(
     title="dtech--test-task",
 )
+app_web.include_router(routes.auth.router)
+app_web.include_router(routes.bills.router)
+app_web.include_router(routes.payments.router)
+app_web.include_router(routes.products.router)
+app_web.include_router(routes.transactions.router)
+app_web.include_router(routes.users.router)
 
 
 @app_web.get("/", response_class=HTMLResponse)
