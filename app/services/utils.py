@@ -1,3 +1,8 @@
+__all__ = [
+    "get_hashed_password",
+    "verify_password",
+]
+
 from passlib.context import CryptContext
 
 from app.settings import SETTINGS
