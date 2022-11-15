@@ -7,7 +7,7 @@ import re
 
 from pydantic import BaseModel, StrictStr
 
-_USERNAME_REGEX = re.compile(r"^[a-zA-z][a-zA-Z0-9]{2,}$")
+_USERNAME_REGEX = re.compile(r"^[a-zA-z][a-zA-Z0-9_.-]{2,}$")
 
 
 class BaseSchema(BaseModel):
@@ -22,7 +22,7 @@ class UsernameField(StrictStr):
     @classmethod
     def __modify_schema__(cls, field_schema):
         field_schema.update(
-            pattern="^[a-zA-z][a-zA-Z0-9]{2,}$",
+            pattern="^[a-zA-z][a-zA-Z0-9_.-]{2,}$",
             examples=["username", "A123456"],
         )
 
