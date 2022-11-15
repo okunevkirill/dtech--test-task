@@ -55,8 +55,8 @@ async def register_user(
 async def update_user(user_id: int,
                       data: UserUpdateSchema,
                       session: AsyncSession = Depends(get_session)):
-    user = await services.database.update_user(user_id, data, session)
     try:
+        user = await services.database.update_user(user_id, data, session)
         await session.commit()
         return AdminUserOutputSchema.from_orm(user)
     except UserNotFoundException as err:
