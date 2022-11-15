@@ -5,7 +5,10 @@ import uvicorn
 from fastapi import FastAPI, status
 from fastapi.responses import HTMLResponse
 
-from app import routes
+from app import routes, services
+from app.dependencies.database import get_session
+from app.exceptions.base import BaseAppException
+from app.schemas.base import UsernameField
 from app.settings import SETTINGS
 from app.db.base import init_models
 
@@ -53,6 +56,27 @@ def init_database():
 def runserver():
     """Launching an application with settings from the environment."""
     uvicorn.run(app_web, host=SETTINGS.APP_HOST, port=SETTINGS.APP_PORT)
+
+
+@app_cli.command()
+def create_superuser(
+        username: str = typer.Option(
+            ..., "-n", "--username", help="User name"),
+        password: str = typer.Option(
+            ..., "-p", "--password",
+            prompt=True, confirmation_prompt=True,
+            hide_input=True, help="User password"),
+):
+    """Create a superuser"""
+    UsernameField.validate(username)
+    try:
+        asyncio.run(
+            services.database.create_superuser(
+                username, password, async_generator=get_session()))
+    except BaseAppException:
+        print("[!] User already exists")
+    else:
+        print("[*] User created")
 
 
 # -----------------------------------------------------------------------------

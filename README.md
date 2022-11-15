@@ -142,4 +142,11 @@ python launcher.py [COMMAND]
 python launcher.py --help
 ```
 
+Команда `create-superuser` позволяет создать в базе данных активированного
+суперпользователя.
+
+```shell
+python launcher.py create-superuser -n [USERNAME ПОЛЬЗОВАТЕЛЯ]
+```
+
 ## ToDo and Notes

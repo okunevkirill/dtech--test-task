@@ -6,11 +6,12 @@ from datetime import datetime
 from typing import List
 
 from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import models
 from app import schemas
+from app.exceptions.base import BaseAppException
 from app.services.utils import get_hashed_password, get_activate_hexdigest
 from app.exceptions.database import UserNotFoundException
 
@@ -61,3 +62,19 @@ async def activate_user(activate_hexdigest: str, session: AsyncSession):
         raise UserNotFoundException
     user.is_active = True
     user.activate_hexdigest = None
+
+
+async def create_superuser(username: str, password: str, async_generator):
+    session = await async_generator.asend(None)
+    password = get_hashed_password(password)
+    user = models.User(username=username,
+                       password=password,
+                       is_superuser=True,
+                       is_active=True)
+    session.add(user)
+
+    try:
+        await session.commit()
+    except IntegrityError:
+        await session.rollback()
+        raise BaseAppException
