@@ -152,3 +152,16 @@ async def get_user_transactions(user_id: int, session: AsyncSession) -> List[mod
     user = await find_user_by_id(user_id, session)
     result = await session.run_sync(lambda _: user.transactions)
     return result
+
+
+# -----------------------------------------------------------------------------
+async def get_all_bills(session: AsyncSession) -> List[models.Bill]:
+    result = await session.execute(
+        select(models.Bill).order_by(models.Bill.created_at))
+    return result.scalars().all()
+
+
+async def get_user_bills(user_id: int, session: AsyncSession) -> List[models.Bill]:
+    user = await find_user_by_id(user_id, session)
+    bills = await session.run_sync(lambda _: user.bills)
+    return bills
