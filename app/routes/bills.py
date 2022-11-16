@@ -14,8 +14,8 @@ async def get_all_bills():
     return "Place for advertising"
 
 
-@router.get("/total/me",
+@router.get("/amount/me",
             status_code=status.HTTP_200_OK,
             summary="View user balance")
-async def get_user_total_bill():
+async def get_user_amount_bill():
     return "Place for advertising"

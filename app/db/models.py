@@ -44,7 +44,7 @@ class Bill(Base):
     __tablename__ = "bills"
 
     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
-    total = Column(Numeric(precision=10, scale=2))
+    amount = Column(Numeric(precision=10, scale=2))
     user_id = Column(Integer, ForeignKey("users.id"))
     created_at = Column(DateTime, default=datetime.now)
 

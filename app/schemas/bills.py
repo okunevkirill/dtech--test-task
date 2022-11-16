@@ -12,7 +12,7 @@ from .base import BaseSchema
 
 class BillOutputSchema(BaseSchema):
     id: conint(ge=1)
-    total: Decimal
+    amount: Decimal
     user_id: conint(ge=1)
     created_at: datetime
 
@@ -21,7 +21,7 @@ class BillOutputSchema(BaseSchema):
         schema_extra = {
             "example": {
                 "id": 1,
-                "total": "300",
+                "amount": "300",
                 "user_id": 1,
                 "created_at": "2022-11-13T15:14:58.657Z"
             }
