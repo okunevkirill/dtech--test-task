@@ -19,6 +19,7 @@ class User(Base):
     activate_hexdigest = Column(String(255))
 
     bills = relationship("Bill")
+    transactions = relationship("Transaction")
     rtoken = relationship("RefreshToken", uselist=False)
 
     def __repr__(self):
@@ -59,8 +60,11 @@ class Transaction(Base):
 
     id = Column(Integer, autoincrement=True, primary_key=True, index=True)
     amount = Column(Numeric(precision=10, scale=2), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"))
     bill_id = Column(Integer, ForeignKey("bills.id"))
     created_at = Column(DateTime, default=datetime.now)
+
+    user = relationship("User", back_populates="transactions")
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id={self.id}, amount={self.amount})"
