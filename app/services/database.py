@@ -17,6 +17,7 @@ from app.services.utils import get_hashed_password, get_activate_hexdigest
 from app.exceptions.database import (
     UserNotFoundException, ProductNotFoundException,
     BillNotFoundException, InsufficientFundsException,
+    TransactionNotFoundException,
 )
 
 
@@ -143,6 +144,13 @@ async def buy_product(product_id: int,
 
 
 # -----------------------------------------------------------------------------
+async def find_transaction_by_id(transaction_id: int, session: AsyncSession):
+    transaction = await session.get(models.Transaction, transaction_id)
+    if transaction is None:
+        raise TransactionNotFoundException
+    return transaction
+
+
 async def get_all_transactions(session: AsyncSession) -> List[models.Transaction]:
     result = await session.execute(select(models.Transaction))
     return result.scalars().all()
@@ -165,3 +173,19 @@ async def get_user_bills(user_id: int, session: AsyncSession) -> List[models.Bil
     user = await find_user_by_id(user_id, session)
     bills = await session.run_sync(lambda _: user.bills)
     return bills
+
+
+# -----------------------------------------------------------------------------
+async def transfer_funds(data: schemas.payments.WebhookInputSchema,
+                         session: AsyncSession):
+    await find_transaction_by_id(data.transaction_id, session)
+    user = await find_user_by_id(data.user_id, session)
+    user_bills = await session.run_sync(lambda _: user.bills)
+    bill: Optional[models.Bill] = None
+    for item in user_bills:
+        if item.id == data.bill_id:
+            bill = item
+            break
+    if bill is None:
+        raise BillNotFoundException
+    bill.amount += data.amount
