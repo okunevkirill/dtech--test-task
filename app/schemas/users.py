@@ -46,8 +46,8 @@ class AdminUserOutputSchema(BaseSchema):
     username: UsernameField
     is_superuser: StrictBool
     is_active: StrictBool
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
     class Config:
         orm_mode = True
