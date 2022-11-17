@@ -2,6 +2,7 @@ __all__ = [
     "BillNotFoundException",
     "InsufficientFundsException",
     "ProductNotFoundException",
+    "TransactionNotFoundException",
     "UserNotFoundException",
 ]
 
@@ -22,3 +23,7 @@ class BillNotFoundException(BaseAppException):
 
 class InsufficientFundsException(BaseAppException):
     message = "There are not enough funds on the specified account"
+
+
+class TransactionNotFoundException(BaseAppException):
+    message = "Transaction not found"
