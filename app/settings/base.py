@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_DATABASE_NAME: StrictStr
     POSTGRES_DATA_VOLUME: Optional[Path] = None
+    # Signatures
+    WEBHOOK_KEY: SecretStr
 
     class Config:
         env_file_encoding = "utf-8"
