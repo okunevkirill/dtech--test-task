@@ -40,6 +40,15 @@ async def find_user_by_id(user_id: int, session: AsyncSession) -> models.User:
     return user
 
 
+async def find_user_by_username(username: str, session: AsyncSession) -> models.User:
+    result = await session.execute(select(models.User).where(models.User.username == username))
+    try:
+        user = result.scalars().one()
+        return user
+    except NoResultFound:
+        raise UserNotFoundException
+
+
 async def get_all_users(session: AsyncSession) -> List[models.User]:
     result = await session.execute(select(models.User))
     return result.scalars().all()
