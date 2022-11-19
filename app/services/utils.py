@@ -6,10 +6,14 @@ __all__ = [
 
 import hashlib
 import os
+from datetime import datetime, timedelta
 
+from jose import jwt
 from passlib.context import CryptContext
 from passlib.handlers.digests import hex_sha1
 
+from app.db import models
+from app.schemas.auth import TokenPayloadSchema
 from app.schemas.payments import WebhookInputSchema
 from app.settings import SETTINGS
 
@@ -43,3 +47,22 @@ def verify_webhook(data: WebhookInputSchema) -> bool:
         f"{data.amount}"
     )
     return signature == data.signature
+
+
+# -----------------------------------------------------------------------------
+def create_token(subject: models.User, expires_delta: int, scope: str) -> str:
+    current_time = datetime.utcnow()
+    expires_delta = current_time + timedelta(minutes=expires_delta)
+    to_encode = TokenPayloadSchema(
+        exp=expires_delta,
+        sub=subject.username,
+        scope=scope,
+        is_superuser=subject.is_superuser,
+        is_active=subject.is_active
+    )
+    encoded_jwt = jwt.encode(
+        to_encode.dict(),
+        SETTINGS.JWT_SECRET_KEY.get_secret_value(),
+        algorithm=SETTINGS.JWT_ALGORITHM
+    )
+    return encoded_jwt
