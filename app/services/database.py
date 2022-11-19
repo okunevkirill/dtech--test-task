@@ -177,8 +177,7 @@ async def get_all_bills(session: AsyncSession) -> List[models.Bill]:
     return result.scalars().all()
 
 
-async def get_user_bills(user_id: int, session: AsyncSession) -> List[models.Bill]:
-    user = await find_user_by_id(user_id, session)
+async def get_user_bills(user: models.User, session: AsyncSession) -> List[models.Bill]:
     bills = await session.run_sync(lambda _: user.bills)
     return bills
 
