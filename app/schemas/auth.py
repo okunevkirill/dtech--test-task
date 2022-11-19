@@ -27,6 +27,5 @@ class TokenOutputSchema(BaseSchema):
 class TokenPayloadSchema(BaseSchema):
     exp: Union[datetime, PositiveInt]
     sub: StrictStr
-    scope: StrictStr
     is_superuser: StrictBool = False
     is_active: StrictBool = False

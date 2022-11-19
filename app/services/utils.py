@@ -50,13 +50,12 @@ def verify_webhook(data: WebhookInputSchema) -> bool:
 
 
 # -----------------------------------------------------------------------------
-def create_token(subject: models.User, expires_delta: int, scope: str) -> str:
+def create_token(subject: models.User, expires_delta: int) -> str:
     current_time = datetime.utcnow()
     expires_delta = current_time + timedelta(minutes=expires_delta)
     to_encode = TokenPayloadSchema(
         exp=expires_delta,
         sub=subject.username,
-        scope=scope,
         is_superuser=subject.is_superuser,
         is_active=subject.is_active
     )
