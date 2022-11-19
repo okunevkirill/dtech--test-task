@@ -165,8 +165,7 @@ async def get_all_transactions(session: AsyncSession) -> List[models.Transaction
     return result.scalars().all()
 
 
-async def get_user_transactions(user_id: int, session: AsyncSession) -> List[models.Transaction]:
-    user = await find_user_by_id(user_id, session)
+async def get_user_transactions(user: models.User, session: AsyncSession) -> List[models.Transaction]:
     result = await session.run_sync(lambda _: user.transactions)
     return result
 
