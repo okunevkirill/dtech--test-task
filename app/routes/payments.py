@@ -6,6 +6,7 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import services
+from app.dependencies.auth import get_active_user_payload
 from app.dependencies.database import get_session
 from app.exceptions.base import BaseAppException
 from app.schemas.payments import WebhookInputSchema
@@ -15,7 +16,8 @@ router = APIRouter(prefix="/payment", tags=["Payments"])
 
 @router.post("/webhook",
              status_code=status.HTTP_200_OK,
-             summary="Request for money transfer")
+             summary="Request for money transfer",
+             dependencies=[Depends(get_active_user_payload)])
 async def transfer_funds(data: WebhookInputSchema,
                          session: AsyncSession = Depends(get_session)):
     if not services.utils.verify_webhook(data):
