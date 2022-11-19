@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dtech-test-task"
-version = "0.1.0"
+version = "0.5.0"
 description = ""
 authors = ["ok_kir <okunev.kirill.ok@yandex.ru>"]
 readme = "README.md"

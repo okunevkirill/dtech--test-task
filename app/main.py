@@ -14,6 +14,7 @@ from app.db.base import init_models
 
 app_web = FastAPI(
     title="dtech--test-task",
+    version="0.5.0",
 )
 app_web.include_router(routes.auth.router)
 app_web.include_router(routes.bills.router)
