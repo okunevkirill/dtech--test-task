@@ -9,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import services
+from app.dependencies.auth import get_super_user_payload
 from app.dependencies.database import get_session
 from app.exceptions.database import UserNotFoundException
 from app.schemas.users import AdminUserOutputSchema, UserInputSchema, UserUpdateSchema
@@ -20,7 +21,8 @@ router = APIRouter(prefix="/users", tags=["Users"])
 @router.get("/",
             response_model=List[AdminUserOutputSchema],
             status_code=status.HTTP_200_OK,
-            summary="List of all users")
+            summary="List of all users",
+            dependencies=[Depends(get_super_user_payload)])
 async def get_all_users(session: AsyncSession = Depends(get_session)):
     users = await services.database.get_all_users(session)
     return [AdminUserOutputSchema.from_orm(obj) for obj in users]
@@ -51,7 +53,8 @@ async def register_user(
 
 @router.put("/{user_id}",
             status_code=status.HTTP_200_OK,
-            summary="Updating user data")
+            summary="Updating user data",
+            dependencies=[Depends(get_super_user_payload)])
 async def update_user(user_id: int,
                       data: UserUpdateSchema,
                       session: AsyncSession = Depends(get_session)):
