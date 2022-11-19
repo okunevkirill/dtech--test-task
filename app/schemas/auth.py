@@ -1,10 +1,12 @@
 __all__ = [
     "TokenOutputSchema",
-    "TokenAccessPayloadSchema",
-    "TokenRefreshPayloadSchema",
+    "TokenPayloadSchema",
 ]
 
-from pydantic import StrictStr, PositiveInt, StrictBool, conint
+from datetime import datetime
+from typing import Union
+
+from pydantic import StrictStr, PositiveInt, StrictBool
 
 from .base import BaseSchema
 
@@ -22,17 +24,9 @@ class TokenOutputSchema(BaseSchema):
         }
 
 
-class TokenAccessPayloadSchema(BaseSchema):
-    exp: PositiveInt
-    iat: PositiveInt
-    sub: conint(ge=1)
+class TokenPayloadSchema(BaseSchema):
+    exp: Union[datetime, PositiveInt]
+    sub: StrictStr
     scope: StrictStr
     is_superuser: StrictBool = False
     is_active: StrictBool = False
-
-
-class TokenRefreshPayloadSchema(BaseSchema):
-    exp: PositiveInt
-    iat: PositiveInt
-    sub: conint(ge=1)
-    scope: StrictStr
