@@ -17,10 +17,10 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now)
     activate_hexdigest = Column(String(255))
+    rtoken = Column(String(255))
 
     bills = relationship("Bill")
     transactions = relationship("Transaction")
-    rtoken = relationship("RefreshToken", uselist=False)
 
     def __repr__(self):
         return (f"{self.__class__.__name__}("
@@ -68,14 +68,3 @@ class Transaction(Base):
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id={self.id}, amount={self.amount})"
-
-
-class RefreshToken(Base):
-    __tablename__ = "refresh_tokens"
-
-    id = Column(Integer, autoincrement=True, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    refresh_token = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.now)
-
-    user = relationship("User", back_populates="rtoken")
