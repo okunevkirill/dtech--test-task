@@ -170,6 +170,12 @@ async def get_user_transactions(user: models.User, session: AsyncSession) -> Lis
     return result
 
 
+def add_transaction(data: schemas.transactions.TransactionInputSchema, session: AsyncSession):
+    transaction = models.Transaction(**data.dict())
+    session.add(transaction)
+    return transaction
+
+
 # -----------------------------------------------------------------------------
 async def get_all_bills(session: AsyncSession) -> List[models.Bill]:
     result = await session.execute(
@@ -185,7 +191,13 @@ async def get_user_bills(user: models.User, session: AsyncSession) -> List[model
 # -----------------------------------------------------------------------------
 async def transfer_funds(data: schemas.payments.WebhookInputSchema,
                          session: AsyncSession):
-    await find_transaction_by_id(data.transaction_id, session)
+    transaction = schemas.transactions.TransactionInputSchema(
+        id=data.transaction_id,
+        amount=data.amount,
+        user_id=data.user_id,
+        bill_id=data.bill_id,
+    )
+    add_transaction(transaction, session)
     user = await find_user_by_id(data.user_id, session)
     user_bills = await session.run_sync(lambda _: user.bills)
     bill: Optional[models.Bill] = None
