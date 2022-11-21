@@ -1,4 +1,5 @@
 __all__ = [
+    "BillInputSchema",
     "BillOutputSchema",
     "AdminBillOutputSchema",
 ]
@@ -9,6 +10,20 @@ from decimal import Decimal
 from pydantic import conint
 
 from .base import BaseSchema
+
+
+class BillInputSchema(BaseSchema):
+    user_id: conint(ge=1)
+    amount: Decimal = 0
+
+    class Config:
+        orm_mode = True
+        schema_extra = {
+            "example": {
+                "user_id": 1,
+                "amount": "100"
+            }
+        }
 
 
 class BillOutputSchema(BaseSchema):
