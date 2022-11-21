@@ -2,6 +2,7 @@ __all__ = [
     "get_activate_hexdigest",
     "get_hashed_password",
     "verify_password",
+    "verify_webhook",
 ]
 
 import hashlib
