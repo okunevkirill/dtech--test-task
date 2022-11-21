@@ -4,7 +4,8 @@ __all__ = [
 
 from typing import List
 
-from fastapi import APIRouter, status, Depends, Query, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import services
@@ -12,7 +13,7 @@ from app.dependencies.auth import get_super_user_payload, get_active_user_payloa
 from app.dependencies.database import get_session
 from app.exceptions.base import BaseAppException
 from app.schemas.auth import TokenPayloadSchema
-from app.schemas.bills import BillOutputSchema, AdminBillOutputSchema
+from app.schemas.bills import BillInputSchema, BillOutputSchema, AdminBillOutputSchema
 
 router = APIRouter(prefix="/bills", tags=["Bills"])
 
@@ -42,3 +43,26 @@ async def get_user_bills(payload: TokenPayloadSchema = Depends(get_active_user_p
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=err.message,
         )
+
+
+@router.post("/",
+             status_code=status.HTTP_201_CREATED,
+             summary="Add new product",
+             dependencies=[Depends(get_super_user_payload)])
+async def add_product(data: BillInputSchema,
+                      session: AsyncSession = Depends(get_session)):
+    bill = services.database.add_bill(data, session)
+    try:
+        await session.commit()
+    except BaseAppException as err:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=err.message,
+        )
+    except IntegrityError:
+        await session.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to create bill",
+        )
+    return BillOutputSchema.from_orm(bill)
