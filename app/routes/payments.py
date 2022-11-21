@@ -3,6 +3,7 @@ __all__ = [
 ]
 
 from fastapi import APIRouter, status, Depends, HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import services
@@ -33,4 +34,9 @@ async def transfer_funds(data: WebhookInputSchema,
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=err.message,
+        )
+    except IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Transaction with this 'id' exists",
         )
