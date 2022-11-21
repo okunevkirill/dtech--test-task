@@ -1,14 +1,33 @@
 __all__ = [
     "AdminTransactionOutputSchema",
     "TransactionOutputSchema",
+    "TransactionInputSchema",
 ]
 
 from datetime import datetime
 from decimal import Decimal
+from typing import Optional
 
 from pydantic import conint
 
 from .base import BaseSchema
+
+
+class TransactionInputSchema(BaseSchema):
+    id: Optional[conint(ge=1)] = None
+    amount: Decimal
+    user_id: conint(ge=1)
+    bill_id: conint(ge=1)
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "id": 1,
+                "amount": "100.00",
+                "user_id": 1,
+                "bill_id": 1,
+            }
+        }
 
 
 class TransactionOutputSchema(BaseSchema):
