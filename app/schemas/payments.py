@@ -19,7 +19,7 @@ class WebhookInputSchema(BaseSchema):
     class Config:
         schema_extra = {
             "example": {
-                "signature": "f4eae5b2881d8b6a1455f62502d08b2258d80084",
+                "signature": "34b4659e3b45b08b6825edefb709ad655c23845c",
                 "transaction_id": 1,
                 "user_id": 1,
                 "bill_id": 1,
