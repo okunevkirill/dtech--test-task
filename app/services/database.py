@@ -188,6 +188,12 @@ async def get_user_bills(user: models.User, session: AsyncSession) -> List[model
     return bills
 
 
+def add_bill(data: schemas.bills.BillInputSchema, session: AsyncSession):
+    bill = models.Bill(**data.dict())
+    session.add(bill)
+    return bill
+
+
 # -----------------------------------------------------------------------------
 async def transfer_funds(data: schemas.payments.WebhookInputSchema,
                          session: AsyncSession):
